@@ -17,6 +17,7 @@ use App\RequisitosVacante;
 use App\InformacionContacto;
 use App\vacante;
 use App\Fecha;
+use App\Http\Controllers\TestController;
 
 /**
  * Landing
@@ -105,4 +106,10 @@ Route::POST('/contacto','MailController@store')->name('contacto');
 Route::get('/offline', function () {    
     return view('vendor/laravelpwa/offline');
 });
-
+/**
+ * Rutas para los Tests
+ */
+Route::post('/enviar_test_aptitud', [TestController::class, 'enviarTestAptitud']);
+Route::post('/enviar_test_personalidad', [TestController::class, 'enviarTestPersonalidad']);
+Route::post('/enviar_test_habilidades', [TestController::class, 'enviarTestHabilidades']);
+Route::post('/enviar_test_intereses', [TestController::class, 'enviarTestIntereses']);

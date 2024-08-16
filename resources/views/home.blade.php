@@ -18,7 +18,7 @@
           <h3 class="font-weight-bolder">Portal de Empleo Lerma </h3>
           <p class="font-weight-light d-lg-none">
             Publicación, promoción y vinculación de empleos.
-          </p><
+          </p>
           <p class="font-weight-light d-none d-lg-block">
             Permite la publicación, promoción y vinculación de empleos promovidos por el gobierno local
             para contribuir a la disminución de tasas de desempleo en el municipio de Lerma.

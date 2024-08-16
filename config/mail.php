@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 2525),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'contacto@lerma.gob.mx'),
+        'address' => env('MAIL_FROM_ADDRESS', 'al222210730@gmail.com'),
         'name' => env('MAIL_FROM_NAME', 'Empleo Lerma'),
     ],
 
@@ -119,6 +119,7 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Log Channel
@@ -130,6 +131,7 @@ return [
     |
     */
 
-    'log_channel' => env('MAIL_LOG_CHANNEL'),
+    'log_channel' => env('MAIL_LOG_CHANNEL', ' stack'),
 
 ];
+
