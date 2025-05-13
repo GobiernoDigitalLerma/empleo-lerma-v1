@@ -6,26 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class vacante extends Model
 {
-    protected $primarykey = 'id_vacante';
-    protected $titulo_puesto;
-    protected $slug;
-    protected $descripcion_breve;
-    protected $FunActi_realizar;
-    protected $conocimientos_requeridos;
-    //protected $habilidades_requeridos;
-    protected $direccioncompleta;
-    protected $lugar_vacante;
-    protected $tipo_empleo;
-    protected $dias_laboral;
-    protected $hora_entrada;
-    protected $hora_salida;
-    protected $salario_mensual;
-    protected $numero_plazas;
-    protected $vigencia_vacante;
-    protected $id_empresa;
-    protected $is_covered;
-    protected $covered_on_platform;
-    protected $table = "vacantes";
+    protected $table = 'vacantes';
+    protected $primaryKey = 'id_vacante'; 
+
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    protected $fillable = [
+        'titulo_puesto',
+        'slug',
+        'descripcion_breve',
+        'FunActi_realizar',
+        'conocimientos_requeridos',
+        'habilidades_requeridos',
+        'direccioncompleta',
+        'tipo_empleo',
+        'salario_mensual',
+        'lugar_vacante',
+        'dias_laboral',
+        'hora_entrada',
+        'hora_salida',
+        'numero_plazas',
+        'vigencia_vacante',
+        'id_empresa',
+        'is_covered',
+        'covered_on_platform',
+    ];
 
     public function scopeTitulo($query, $titulo)
     {
@@ -39,4 +45,15 @@ class vacante extends Model
             return $query->where('lugar_vacante', 'LIKE', "%$lugar%")
                 ->orWhere('direccioncompleta', 'LIKE', "%$lugar%");
     }
+   
+public function empresa()
+{
+    return $this->belongsTo(Empresa::class, 'id_empresa', 'id_empresa');
+}
+public function informacionContacto()
+{
+    return $this->hasOne(InformacionContacto::class, 'id_vacante', 'id_vacante');
+}
+
+
 }

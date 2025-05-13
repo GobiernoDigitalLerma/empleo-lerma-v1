@@ -25,4 +25,10 @@ class DatosEmpresa extends Model
     protected $foto_perfil;
     protected $id;
     protected $table = "datos_empresas";
+   
+public function vacantes()
+{
+    return $this->hasMany(Vacante::class, 'id_empresa', 'id_empresa');
+}
+
 }

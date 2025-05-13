@@ -174,10 +174,16 @@ class VacantesController extends Controller
         $publicacion->id_vacante            = $idv_next;
         $publicacion->save();
 
-        //get admins
-        $admins = User::where('tipo_user', 'admin')->get();
-        //send notification
-        Notification::send($admins, new NewVacancy($vacante));
+        $notifiable = new class {
+            use \Illuminate\Notifications\Notifiable;
+        
+            public function routeNotificationForMail()
+            {
+                return 'empleo.lerma@gmail.com'; 
+            }
+        };
+        
+        Notification::send($notifiable, new NewVacancy($vacante));
 
         return redirect()->route('micuenta');
     }
@@ -399,10 +405,7 @@ class VacantesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+  
 
     public function postulacion(Request $req)
     {
@@ -491,4 +494,21 @@ class VacantesController extends Controller
         return response()->json(['success'=>'La vacante se ha modificado satisfactoriamente', 
                                  'name'=>$vacante->titulo_puesto]);
     }
+    public function destroy($id)
+{
+    $vacante = Vacante::findOrFail($id); 
+    $vacante->delete();
+
+    return redirect()->back()->with('success', 'Vacante marcada como cubierta y eliminada.');
+}
+public function marcarCubierta($id)
+{
+    $vacante = Vacante::where('id_vacante', $id)->firstOrFail();
+    $vacante->is_covered = true;
+    $vacante->save();
+
+    return redirect()->back()->with('success', 'Vacante marcada como cubierta.');
+}
+
+
 }

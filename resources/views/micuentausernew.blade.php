@@ -28,6 +28,7 @@
               </div>
               <div class="card-body">
                 <ul class="list-group">
+                  
                   <li class="list-group-item"><small>Nombre:</small> <span>{{ Auth::user()->nombre }}</span></li>
                   <li class="list-group-item"><small>Teléfono:</small> <span>{{ Auth::user()->telefono }}</span></li>
                   <li class="list-group-item"><small>Email:</small> <span>{{ Auth::user()->email }}</span></li>

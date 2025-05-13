@@ -1,5 +1,4 @@
 @extends('layouts.base')
-
 @section('content')
 <!--Dashboard-->
 <section class="events py-5">
@@ -7,7 +6,7 @@
     <div class="row justify-content-between">
       <!--username-->
       <div class="col-12">
-        <h4 class="ml-4 lerma">{{ Auth::user()->nombre }}</h4>
+        <h3 class="ml-4 lerma">{{ Auth::user()->nombre }}</h3>
       </div>
       <!--menu-->
       <div class="col-12 col-md-4">
@@ -24,7 +23,7 @@
           <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Datos de Contacto</h5>
+                <h3 class="text-center font-weight-bold">Datos de Contacto</h3>
               </div>
               <div class="card-body">
                 <ul class="list-group">
@@ -45,7 +44,8 @@
                     <h4 class="text-center">Aún no te haz postulado a una vacante.</h4>
                     @else
                     @foreach($postulaciones as $postulacion)
-                    <a href="{{ route('vacante', $postulacion->slug) }}" class="media mb-4">
+                    <a href="{{ route('vacante', $postulacion->slug) }}" class="d-flex align-items-center p-4 rounded shadow-lg bg-white text-decoration-none" 
+                    style="border-left: 10px solid #00a9e0; transition: 0.3s;">
                     <div style="height: 100px; width: 100px; 
                             background: url('archivo/{{$postulacion->foto_perfil}}') no-repeat center center; 
                             -webkit-background-size: contain;
@@ -71,7 +71,7 @@
           <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Mis Datos</h5>
+                <h3 class="text-center font-weight-bold">Mis Datos</h3>
               </div>
               <div class="card-body pt-0">
                 <div class="container">
@@ -341,7 +341,7 @@
           <div class="tab-pane fade" id="v-pills-applications" role="tabpanel" aria-labelledby="v-pills-applications-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Postulaciones</h5>
+                <h3 class="text-center font-weight-bold">Postulaciones</h3>
               </div>
               <div class="card-body">
                 <div class="card-content">
@@ -350,7 +350,8 @@
                     <h4 class="text-center">Aún no te haz postulado a una vacante.</h4>
                     @else
                     @foreach($postulacions as $postulacion)
-                    <a href="{{ route('vacante', $postulacion->slug) }}" class="media mb-4">
+                    <a href="{{ route('vacante', $postulacion->slug) }}" class="d-flex align-items-center p-4 rounded shadow-lg bg-white text-decoration-none" 
+                    style="border-left: 10px solid #00a9e0; transition: 0.3s;">
                       <div style="height: 100px; width: 100px; 
                             background: url('archivo/{{$postulacion->foto_perfil}}') no-repeat center center; 
                             -webkit-background-size: contain;
@@ -376,7 +377,7 @@
           <div class="tab-pane fade" id="v-pills-cv" role="tabpanel" aria-labelledby="v-pills-cv-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Mi Curriculum</h5>
+                <h3 class="text-center font-weight-bold">Mi Curriculum</h3>
               </div>
               <div class="card-body  pt-0">
                 <div class="container">
@@ -391,7 +392,7 @@
                             <a class="nav-link active" data-toggle="tab" href="#verc">Ver Datos</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#cv">Descargar/Subir CV</a>
+                            <a class="nav-link" data-toggle="tab" href="#cv" >Descargar/Subir CV</a>
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#modificarc">Editar Datos</a>
@@ -442,7 +443,7 @@
                               <input type="text" class="form-control" readonly name="situacionacad" value="@foreach($escolaridad as $esc) {{ $esc->situacion_academica }} @endforeach">
                             </div>
                             <div class="form-group col-md-12">
-                              <label for="situacionacad" class="font-weight-bold">Carera o Especialidad:</label><br>
+                              <label for="situacionacad" class="font-weight-bold">Carrera o Especialidad:</label><br>
                               <input type="text" readonly class="form-control" name="carrera" value="@foreach($escolaridad as $esc) {{ $esc->carrera_especialidad }} @endforeach">
                             </div>
                             <div class="form-group col-md-6">
@@ -573,7 +574,7 @@
                       <div class="form-row" align="center">
                         <div class="form-group col-md-12">
                           <h5>Te ofrecemos un formato de tu currículum vitae de forma gratuita<h5>
-                              <a class="btn btn-primary col-md-8" href="{{ url('/cvpdf') }}" target="_blank">Descargar CV</a>
+                              <a class="btn btn-primary col-md-8" href="{{ url('/cvpdf') }}" target="_blank" >Descargar CV</a>
                               <hr />
                               <h5>Tambien puedes subir tu propio formato de currículum vitae aqui</h5>
                               <hr />
@@ -608,6 +609,8 @@
                               @csrf
                               <label for="cv" class="font-weight-bold">Subir CV: (Opcional)</label><br>
                               <input type="file" name="userCV" id="userCV" accept=".pdf,.doc,.docx" title="Solo documentos con extensión: pdf, docx, doc" required><br><br>
+                              <label for="cv" class="font-weight-bold">Test psicometrico: </label><br>
+                              <input type="file" name="test" id="test_id" accept=".pdf,.doc,.docx" title="Solo documentos con extensión: pdf, docx, doc" required><br><br>
                               <button type="submit" class="btn btn-primary">Guardar</button>
                               </form>
                               @endif
@@ -1134,46 +1137,8 @@
     </div>
   </div>
 </section>
-<!-- Search -->
-<section class="bg-light">
-  <div class="container">
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-8">
-        <form action="{{ route('buscar') }}" class="row data-form form-search bg-light" method="GET">
-          <div class="col-12 col-md-6">
-            <div class="form-group">
-              <label for="searchText">¿Qué trabajo buscas?</label>
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <i class="fa fa-briefcase"></i>
-                  </div>
-                </div>
-                <input type="text" class="form-control" id="vacantes" name="titulo_puesto" placeholder="Puesto o Área Deseada">
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <div class="form-group ">
-              <label for="searchCity">¿Dónde?</label>
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <i class="fas fa-map-marker-alt"></i>
-                  </div>
-                </div>
-                <input class="form-control" id="municipio" name="lugar_vacante" placeholder="Municipio, Colonia o Ciudad">
-              </div>
-              <div class="text-right">
-                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Buscar</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
+
+
 @endsection
 
 @section('scripts')
