@@ -60,5 +60,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public function unreadNotifications()
+{
+    return $this->notifications()->whereNull('read_at');
+}
+
 }
 

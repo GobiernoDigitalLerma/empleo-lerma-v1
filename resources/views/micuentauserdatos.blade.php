@@ -59,7 +59,7 @@
                   <!-- Nav tabs -->
                   <ul class="nav nav-pills justify-content-center" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link active" data-toggle="tab" href="#verdatos">Ver Datos</a>
+                      <a class="nav-link active " data-toggle="tab" href="#verdatos">Ver Datos</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" data-toggle="tab" href="#modificardatos">Editar Datos</a>

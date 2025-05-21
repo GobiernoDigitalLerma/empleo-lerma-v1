@@ -17,10 +17,34 @@ use App\RequisitosVacante;
 use App\InformacionContacto;
 use App\vacante;
 use App\Fecha;
-
+use App\Http\Controllers\EventoController;
+use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use App\Http\Controllers\EmpresaController;
 /**
  * Landing
  */
+Route::get('/eventos', 'EventoController@eventos')->name('eventos');
+Route::any('/guardardatoseventos', 'EventoController@guardardatoseventos')->name('guardardatoseventos');
+Route::any('/admineventos', function () { return view('admineventos');});
+Route::get('/modificacioneventos', 'EventoController@modificacioneventos')->name('modificacioneventos');
+Route::any('/updateeventos/{id}', 'EventoController@updateeventos')->name('updateeventos');
+Route::any('eventos/{id}', 'EventoController@deleteeventos')->name('eventos.delete');
+Route::get('/descrevento/{id}', 'EventoController@descrevento')->name('descrevento');
+Route::get('/notificaciones', 'NotificationController@notificaciones')->name('notificaciones');
+Route::get('/index', 'TestController@index')->name('index');
+Route::any('/result', 'TestController@result')->name('result');
+Route::get('/test', 'TestController@index')->name('test');
+Route::any('/guardarTestAptitud', 'TestController@guardarTestAptitud')->name('guardarTestAptitud');
+Route::any('/guardarTestPersonalidad', 'TestController@guardarTestPersonalidad')->name('guardarTestPersonalidad');
+Route::any('/guardarTestHabilidades', 'TestController@guardarTestHabilidades')->name('guardarTestHabilidades');
+Route::any('/guardarTestIntereses', 'TestController@guardarTestIntereses')->name('guardarTestIntereses');
+Route::get('/descargarPDF', 'TestController@descargarPDF')->name('descargarPDF');
+Route::get('/notificar-empresa/{id}', 'EmpresaController@notificarEmpresa')->name('notificarEmpresa');
+Route::delete('/vacante/{id}/eliminar', 'VacantesController@destroy')->name('vacante.eliminar');
+Route::patch('/vacantes/{id}/cubrir', 'VacantesController@marcarCubierta')->name('vacante.cubrir');
+
 
 Route::get('/', function () {
     if(Auth()->guest())
@@ -53,6 +77,19 @@ Route::get('/ofrezco_empleo', function () {
     return view('ofrezcoempleo');
 });
 
+Route::get('/materialapoyo', function () {
+    return view('materialapoyo');
+});
+Route::get('/creatucv', function () {
+    return view('creatucv');
+});
+Route::get('/tipsentrevista', function () {
+    return view('tipsentrevista');
+});
+Route::get('/controlaemociones', function () {
+    return view('controlaemociones');
+});
+
 //Busqueda
 Route::get('/search', 'VacantesController@index')->name('buscar'); 
 
@@ -62,43 +99,45 @@ Route::get('/search', 'VacantesController@index')->name('buscar');
 Auth::routes();
 Auth::routes(['verify' => true]);
 
+
 //home
-Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/vacantesparati', 'HomeController@vacantesparati')->name('vacantesparati');
 Route::get('/getMpios','HomeController@getMpios')->name('getMpios');
-Route::get('/micuenta', 'HomeController@micuenta')->name('micuenta')->middleware('verified');
+Route::get('/micuenta', 'HomeController@micuenta')->name('micuenta');
 
 // Rutas PDF
 Route::get('/cvpdf', 'HomeController@exportarpdf')->middleware('auth');
 Route::get('/cvuserpdf/{nombre_completo}', 'VacantesController@cvuserpdf')->name('cvuserpdf')->middleware('auth');
 
 // Curriculum
-Route::POST('/curriculum', 'HomeController@curriculum')->name('curriculum')->middleware('auth');
+Route::get('/curriculum', 'HomeController@curriculum')->name('curriculum')->middleware('auth');
 Route::POST('/guardarcurriculum', 'HomeController@guardarcurriculum')->name('guardarcurriculum')->middleware('auth');
 Route::POST('/actualizarcurriculum', 'HomeController@actualizarcurriculum')->name('actualizarcurriculum')->middleware('auth');
 Route::POST('/archivocv', 'HomeController@archivocv')->name('archivocv')->middleware('auth');
 Route::POST('/archivocvact', 'HomeController@archivocvact')->name('archivocvact')->middleware('auth');
 
 // Ciudadano
-Route::POST('/guardardatosc', 'HomeController@guardardatosc')->name('guardardatosc')->middleware('auth');
-Route::POST('/actualizardatosc', 'HomeController@actualizardatosc')->name('actualizardatosc')->middleware('auth');
+Route::POST('/guardardatosc', 'HomeController@guardardatosc')->name('guardardatosc');
+Route::POST('/actualizardatosc', 'HomeController@actualizardatosc')->name('actualizardatosc');
 
 // Empresa
-Route::POST('/guardardatosemp', 'HomeController@guardardatosemp')->name('guardardatosemp')->middleware('auth');
-Route::POST('/modificardatosemp', 'HomeController@modificardatosemp')->name('modificardatosemp')->middleware('auth');
-Route::get('modificarestadoemp', 'HomeController@modificarestadoemp')->name('modificarestadoemp')->middleware('auth');
+Route::any('/guardardatosemp', 'HomeController@guardardatosemp')->name('guardardatosemp');
+Route::any('/modificardatosemp', 'HomeController@modificardatosemp')->name('modificardatosemp');
+Route::get('/modificarestadoemp', 'HomeController@modificarestadoemp')->name('modificarestadoemp');
 
 // Vacantes
 Route::get('vacante/{slug}', 'VacantesController@show')->name('vacante');
-Route::POST('/guardarvacante', 'VacantesController@create')->name('guardarvacante')->middleware('auth');
-Route::get('vacante/{id}/editar', 'VacantesController@edit')->name('editarvacante')->middleware('auth');
-Route::POST('vacante/{id}/actualizar', 'VacantesController@update')->name('actualizarvacante')->middleware('auth');
-Route::get('vacante/{id}/cubierta/{platform_support}', 'VacantesController@covered')->name('vacantecubierta')->middleware('auth');
+Route::any('/guardarvacante', 'VacantesController@create')->name('guardarvacante');
+Route::get('vacante/{id}/editar', 'VacantesController@edit')->name('editarvacante');
+Route::any('vacante/{id}/actualizar', 'VacantesController@update')->name('actualizarvacante');
+Route::get('vacante/{id}/cubierta/{platform_support}', 'VacantesController@covered')->name('vacantecubierta');
 
 // Postulacion
-Route::POST('/postulacion', 'VacantesController@postulacion')->name('postulacion')->middleware('auth');
+Route::POST('/postulacion', 'VacantesController@postulacion')->name('postulacion');
 
 // Email
-Route::get('/email_contacto/{email}', 'VacantesController@contactar')->name('correo')->middleware('auth');
+Route::get('/email_contacto/{email}', 'VacantesController@contactar')->name('correo');
 Route::POST('/contacto','MailController@store')->name('contacto');
 
 // Offline

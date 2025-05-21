@@ -3,7 +3,6 @@
 
 <head>
   <meta charset="UTF-8">
-  <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -29,73 +28,109 @@
   @laravelPWA
   <!--header-->
   <header>
-    <div class="brand text-center">
-      <a href="{{url('/')}}">
-        <img src="{{asset('assets/img/logos-lerma.png')}}" alt="lerma">
-      </a>
-    </div>
-    <div class="social-icons">
-      <div class="container">
-        <nav class="navbar navbar-expand-md navbar-light p-0">
-          <div class="btn"><i class="fas fa-user fa-sm pr-1"></i>@auth {{ Auth::user()->nombre }}@endauth</div>          
-          <button style="border-color:white;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerAccount" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-ellipsis-h"></i>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarTogglerAccount">
-            <ul class="ml-auto p-0">
-              @guest
-              <li>
-                <a href="{{ route('login') }}" class="btn"> Iniciar Sesión </a>
-              </li>
-              @if (Route::has('register'))
-              <li>
-                <a href="{{ route('register') }}" class="btn"> Registrarse </a>
-              </li>
-              @endif
-              @else
-              <li>
-                <a href="{{ route('micuenta') }}" class="btn">{{ __('Mi Cuenta') }}</a>
-              </li>
-              <li><a class="btn" href="{{ route('logout') }}" onclick="event.preventDefault();
-                          document.getElementById('logout-form').submit();">
-                  {{ __('Cerrar Sesión') }}
+  <div class="social-icons">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light p-0">
+        <a href="{{url('/')}}" class="navbar-brand">
+          <img src="{{asset('assets/img/logo_lerma.png')}}" alt="lerma" width="120" height="auto">
+        </a>
+        
+        <button style="border-color:white;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerAccount" aria-controls="navbarTogglerAccount" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerAccount">
+    <ul class="navbar-nav ml-auto">
+        @guest
+            <li class="nav-item">
+                <a href="{{ route('login') }}" class="btn" style="color:#545859"  > Iniciar Sesión </a>
+            </li>
+            @if (Route::has('register'))
+                <li class="nav-item">
+                    <a href="{{ route('register') }}" class="btn" style="color:#545859"> Registrarse </a>
+                </li>
+            @endif
+        @else
+            <li class="nav-item ">
+                <a class="btn" href="{{ route('micuenta') }}" style="color:#545859"> 
+                    @auth {{ Auth::user()->nombre }} @endauth
+                </a>
+            </li>
+
+            <li class="nav-item ">
+                <a class="btn" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"style="color:#545859" >
+                    {{ __('Cerrar Sesión') }}
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                  @csrf
+                    @csrf
                 </form>
-              </li>
-              @endguest
-              <li class="facebook">
-                <a href="https://www.facebook.com/Ayuntamiento-de-Lerma-467953823268730" class="s-i" target="_blank"></a>
-              </li>
-              <li class="youtube">
-                <a href="https://www.youtube.com/channel/UC8IK9ozLAiYcvIftlzb1NWw" class="s-i" target="_blank"></a>
-              </li>
-          </div>
-        </nav>
-      </div>
-    </div>
-    <nav class="navbar navbar-expand-md navbar-dark gradient-brand">
-      <div class="container">
-        <button class="navbar-toggler ri" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Menu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarToggler">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Inicio</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/busco_empleo">Busco Empleo</a>
+        @endguest
+    </ul>
+</div>
+            <li class="nav-item facebook">
+              <a href="https://www.facebook.com/profile.php?id=100063389460196" class="s-i" target="_blank">
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/ofrezco_empleo">Ofrezco Empleo</a>
+            <li class="nav-item instagram">
+              <a href="https://www.instagram.com/lermamex/" class="s-i" target="_blank">
+              </a>
+            </li>
+            <li class="nav-item youtube">
+              <a href="https://www.youtube.com/channel/UC8IK9ozLAiYcvIftlzb1NWw" class="s-i" target="_blank">
+              </a>
             </li>
           </ul>
         </div>
-      </div>
-    </nav>
-  </header>
+      </nav>
+    </div>
+  </div>
+  
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #00a9e0;">
+
+  <div class="container">
+    <!-- Botón del menú para pantallas pequeñas -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
+      aria-controls="navbarToggler" aria-expanded="false" aria-label="Menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menú de navegación -->
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">
+            <i class="fas fa-home me-2"></i> Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/busco_empleo">
+            <i class="fas fa-search me-2"></i> Busco Empleo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/ofrezco_empleo">
+            <i class="fas fa-briefcase me-2"></i> Ofrezco Empleo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/eventos">
+            <i class="fas fa-calendar-alt me-2"></i> Eventos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/materialapoyo">
+            <i class="fa fa-info"></i>  Recursos Complementarios
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+</header>
+
   @yield('content')
   <!--footer-->
   <footer>
@@ -107,15 +142,15 @@
           </div>
           <div class="col-10 col-md-4">
             <h5 class="text-uppercase pb-1">Contáctanos</h5>
-            <i class="fas fa-phone fa-xs fa-footer pr-3"></i><a href="tel:+52 728 2829903" class="text-light">+52 (728) 2829903</a><br>
+            <i class="fas fa-phone fa-xs fa-footer pr-3"></i><a href="tel:722 706 3143" class="text-light"> 722 706 3143</a><br>
             <i class="far fa-envelope fa-xs fa-footer pr-3"></i><a href="mailto:empleolerma@gmail.com" class="text-light">empleo.lerma@gmail.com</a><br>
             <i class="fas fa-map-marker-alt fa-xs fa-footer pr-3"></i><a href="#" class="text-light">Palacio Municipal s/n Col. Centro, Lerma, Estado de México</a>
           </div>
           <div class="col-10 col-md-3">
             <h5 class="text-uppercase pb-1">Síguenos</h5>
-            <i class="fab fa-facebook fa-xs fa-footer pr-3"></i><a href="#" class="text-light">Facebook</a><br>
-            <i class="fab fa-instagram-square fa-xs fa-footer pr-3"></i><a href="#" class="text-light">Instagram</a><br>
-            <i class="fab fa-youtube fa-xs fa-footer pr-3"></i><a href="#" class="text-light">YouTube</a><br>
+            <i class="fab fa-facebook fa-xs fa-footer pr-3"></i><a href="https://www.facebook.com/profile.php?id=100063389460196" class="text-light">Facebook</a><br>
+            <i class="fab fa-instagram-square fa-xs fa-footer pr-3"></i><a href="https://www.instagram.com/lermamex/" class="text-light">Instagram</a><br>
+            <i class="fab fa-youtube fa-xs fa-footer pr-3"></i><a href="https://www.youtube.com/channel/UC8IK9ozLAiYcvIftlzb1NWw" class="text-light">YouTube</a><br>
           </div>
           <div class="col-10 col-md-4">
             <h5 class="text-uppercase pb-1">Enlaces de interes</h5>

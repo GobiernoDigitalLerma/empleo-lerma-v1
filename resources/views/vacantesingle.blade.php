@@ -7,20 +7,20 @@
   <div class="container my-md-5">
     <div class="row justify-content-md-center">
       <div class="col-12 mb-3">
-        <h3>{{$vacante->titulo_puesto}}</h3>
+        <h2 class="text-center">{{$vacante->titulo_puesto}}</h2>
         <hr>
       </div>
       <div class="col-12 col-md-8">
-        <div class="card-group vacancies mr-md-4">
-          <div class="card bg-info text-white text-center mb-0 mb-md-3">
-            <div class="card-header mt-3">
+        <div class="card-group vacancies mr-md-4 " style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;">
+          <div class="card text-center mb-0 mb-md-3" style="color: #00a9e0">
+            <div class="card-header mt-3 ">
               <h6 class="mb-0">Sueldo Mensual</h6>
             </div>
             <div class="card-body pt-0">
               <h5 class="mb-0">${{$vacante->salario_mensual}}</h5>
             </div>
           </div>
-          <div class="card  bg-info text-white text-center mb-0 mb-md-3">
+          <div class="card  text-center mb-0 mb-md-3" style="color: #00a9e0">
             <div class="card-header mt-3">
               <h6 class="mb-0">Lugar</h6>
             </div>
@@ -28,7 +28,7 @@
               <h5 class="mb-0">{{$vacante->lugar_vacante}}</h5>
             </div>
           </div>
-          <div class="card  bg-info text-white text-center mb-0 mb-md-3">
+          <div class="card text-center mb-0 mb-md-3" style="color: #00a9e0">
             <div class="card-header mt-3">
               <h6 class="mb-0">Tipo</h6>
             </div>
@@ -106,7 +106,8 @@
           </ul>
           @endauth
           @guest
-          <p style="color:#17a2b8">Inicia sesion para ver datos.</p>
+    
+          <a href="{{ route('login') }}" style="color:#00a9e0">Inicia sesion para ver datos.</a>
           @endguest
         </div>
         <h4 class="my-3 font-weight-bold">Contacto: </h4>
@@ -136,7 +137,7 @@
           </ul>
           @endauth
           @guest
-          <p style="color:#17a2b8">Inicia sesion para ver datos.</p>
+          <a href="{{ route('register') }}" style="color:#00a9e0">Inicia sesion para ver datos.</a>
           @endguest
         </div>
       </div>
@@ -162,15 +163,15 @@
               </div>
               @guest
               <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#applyModal">Postularme</button>
+              <button type="button" class="btn btn-block" data-toggle="modal" data-target="#applyModal" style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;">Postularme</button>
               <!-- <a href="#" class="btn btn-primary btn-block">Postularme</a> -->
               @else
               @empty($postulacion)
               <!-- Button trigger modal -->
-              <button id="btn-postulate" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#applyModal">Postularme</button>
+              <button id="btn-postulate" type="button" class="btn btn-block" data-toggle="modal" data-target="#applyModal" style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;">Postularme</button>
               <!-- <a href="#" class="btn btn-primary btn-block">Postularme</a> -->
               @else
-              <button type="button" class="btn btn-primary btn-block" disabled>Ya te haz postulado</button>
+              <button type="button" class="btn btn-block" style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;"  disabled>Ya te haz postulado</button>
               @endempty
               @endguest
             </div>
@@ -187,8 +188,7 @@
       <div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Lo sentimos, no puedes postularte a esta vacante.</h5>
+          <div class="modal-header bg-info text-white rounded-top">              <h5 class="modal-title">Lo sentimos, no puedes postularte a esta vacante.</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span style="color:white" aria-hidden="true">&times;</span>
               </button>
@@ -198,13 +198,13 @@
                 <h6>Para poder postularte, primero debes:</h6>
               </div>
               <div align="center">
-                <a href="{{ url('/login?redirect_to='.url()->current()) }}" class="btn btn-primary col-md-4 btn-block">Iniciar Sesión</a>
+                <a href="{{ url('/login?redirect_to='.url()->current()) }}" class="btn  btn-block" style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;">Iniciar Sesión</a>
               </div>
               <div align="center">
                 <h6>ó</h6>
               </div>
               <div align="center">
-                <a href="{{route('register')}}" class="btn btn-primary col-md-4 btn-block">Registrarte</a>
+                <a href="{{route('register')}}" class="btn btn-block" style="border: 2px solid #00a9e0; background-color: transparent; color: #00a9e0; border-radius: 15px !important; padding: 8px 15px;">Registrarte</a>
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@
                 @csrf
                 <input type="hidden" name="idvacante" value="{{$vacante->id_vacante}}">
                 <input type="hidden" name="url" value="{{url()->current()}}">
-                <button id="btn-apply" type="submit" class="btn btn-primary">Postularme</button>
+                <button id="btn-apply" type="submit" class="btn gradient-brand text-white">Postularme</button>
               </form>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
@@ -242,8 +242,7 @@
       <div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="applyModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header gradient-brand">
-              <h5 class="modal-title" style="color:white" id="exampleModalLongTitle">Para continuar con esta acción:</h5>
+          <div class="modal-header bg-info text-white rounded-top">              <h5 class="modal-title" style="color:white" id="exampleModalLongTitle">Para continuar con esta acción:</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span style="color:white" aria-hidden="true">&times;</span>
               </button>

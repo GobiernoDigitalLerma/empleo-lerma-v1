@@ -26,7 +26,7 @@
               <div class="col-12 col-md-6">
                 <div class="card">
                   <div class="card-header bg-white">
-                    <h5 class="text-center font-weight-bold">Datos de Contacto</h5>
+                    <h4 class="text-center font-weight-bold">Datos de Contacto</h4>
                   </div>
                   <div class="card-body">
                     <ul class="list-group">
@@ -39,7 +39,7 @@
               <div class="col-12 col-md-6">
                 <div class="card">
                   <div class="card-header bg-white">
-                    <h5 class="text-center font-weight-bold">Resumen</h5>
+                    <h4 class="text-center font-weight-bold">Resumen</h4>
                   </div>
                   <div class="card-body">
                     <ul class="list-group">
@@ -52,7 +52,7 @@
             </div>
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Postulaciones Recientes</h5>
+                <h4 class="text-center font-weight-bold">Postulaciones Recientes</h4>
               </div>
               <div class="card-body">
                 <div class="card-content">
@@ -111,7 +111,7 @@
           <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Datos Empresariales</h5>
+                <h3 class="text-center font-weight-bold">Datos Empresariales</h3>
               </div>
               @if($empresa)
               <div class="card-body pt-0">
@@ -399,7 +399,7 @@
           <div class="tab-pane fade" id="v-pills-applications" role="tabpanel" aria-labelledby="v-pills-applications-tab">
             <div class="card">
               <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Postulaciones</h5>
+                <h3 class="text-center font-weight-bold">Postulaciones</h3>
               </div>
               <div class="card-body">
                 <div class="card-content">
@@ -456,26 +456,58 @@
           </div>
           <!-- Vacancies -->
           <div class="tab-pane fade" id="v-pills-vacancies" role="tabpanel" aria-labelledby="v-pills-vacancies-tab">
-            <div class="card">
-              <div class="card-header bg-white">
-                <h5 class="text-center font-weight-bold">Vacantes</h5>
-              </div>
-              @if($empresa)
-              @if($empresa->is_active)
-              <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie">Nueva Vacante</button>
-              @else
-              <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie" disabled>Nueva Vacante</button>
-              <p class="text-center font-weight-light text-secondary mt-3">
-                Ya haz llenado tu perfil!<br> En breve <strong>Empleo Lerma</strong> se comunicará contigo para verificar los datos y puedas publicar vacantes.</p>
-              @endif
-              @else
-              <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie" disabled>Nueva Vacante</button>
-              <p class="text-center font-weight-light text-secondary mt-3">
-                Aún no puedes publicar vacantes, para hacerlo necesitas completar los datos empresariales, <br />
-                <strong>Empleo Lerma</strong> verificará la veracidad de los datos para que puedas publicar.
-              </p>
-              @endif
+  <div class="card">
+    <div class="card-header bg-white">
+      <h3 class="text-center font-weight-bold">Vacantes</h3>
+    </div>
+
+    @if($empresa)
+      @if($empresa->is_active)
+        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie">
+          Nueva Vacante
+        </button>
+        
+        <ul class="list-group mt-4 mx-3">
+        @foreach($empresa->vacantes->where('is_covered', 0) as $vacante)
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ $vacante->titulo_puesto }}</strong><br>
+        <small>Publicado el: {{ $vacante->created_at->format('d/m/Y') }}</small>
+      </div>
+      <div class="btn-group">
+        <a href="{{ route('vacante', ['slug' => $vacante->slug]) }}" class="btn btn-sm btn-outline-primary">
+          Ver
+        </a>
+        <form action="{{ route('vacante.cubrir', $vacante->id_vacante) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que esta vacante ya fue cubierta?')">
+  @csrf
+  @method('PATCH')
+  <button type="submit" class="btn btn-sm btn-outline-danger ml-2">Vacante cubierta</button>
+</form>
+      </div>
+    </li>
+  @endforeach
+</ul>
+      @else
+        <!-- Empresa inactiva -->
+        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie" disabled>
+          Nueva Vacante
+        </button>
+        <p class="text-center font-weight-light text-secondary mt-3">
+          Ya haz llenado tu perfil!<br>
+          En breve <strong>Empleo Lerma</strong> se comunicará contigo para verificar los datos y puedas publicar vacantes.
+        </p>
+      @endif
+    @else
+      <!-- Empresa no tiene datos -->
+      <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalVacancie" disabled>
+        Nueva Vacante
+      </button>
+      <p class="text-center font-weight-light text-secondary mt-3">
+        Aún no puedes publicar vacantes, para hacerlo necesitas completar los datos empresariales, <br />
+        <strong>Empleo Lerma</strong> verificará la veracidad de los datos para que puedas publicar.
+      </p>
+    @endif
+
               <div class="card-body">
                 <div class="card-content">
                   <ul class="list-unstyled">
@@ -514,12 +546,13 @@
             <div class="modal fade" id="modalVacancie" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
-                  <div class="modal-header gradient-brand">
-                    <h5 class="modal-title" style="color:white" id="exampleModalLongTitle">Formulario de Nueva Vacante.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span style="color:white" aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
+                <div class="modal-header bg-info text-white rounded-top">
+  <h5 class="modal-title font-weight-bold">Formulario de Nueva Vacante</h5>
+  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
                   <div class="modal-body p-0">
                     {{Form::open(['route' => 'guardarvacante', 'class' => 'data-form'])}}
                     @csrf

@@ -31,6 +31,9 @@ use App\reciente;
 use Barryvdh\DomPDF\Facade as PDF;
 use Session;
 use DB;
+use App\Notifications\NuevaNotificacion;
+use App\Notifications\ActualizacionDatos;
+
 
 class HomeController extends Controller
 {
@@ -72,7 +75,28 @@ class HomeController extends Controller
 
         return view('home', compact('empresas','municipios','vacantes','requisitos','info','fechas','recientes', 'no_vacantes'));
     }
+    public function vacantesparati()
+    {
+        $empresas   = DatosEmpresa::orderBy('id_empresa','DESC')->limit('12')->get();
+        $municipios = vacante::select('lugar_vacante')->distinct()->get();
+        $vacantes   = \DB::SELECT("SELECT * FROM vacantes 
+                                INNER JOIN datos_empresas ON vacantes.id_empresa = datos_empresas.id_empresa 
+                                INNER JOIN fechas ON vacantes.id_vacante = fechas.id_vacante
+                                ORDER BY vacantes.created_at DESC LIMIT 10");
+        $requisitos = RequisitosVacante::All();
+        $info       = InformacionContacto::All();
+        $fechas     = Fecha::All();
+        $id         = auth()->id();
+        $recientes  = reciente::distinct('slug')
+                                ->where('id_usuario',$id)
+                                ->orderBy('created_at','DESC')
+                                ->limit('7')
+                                ->get();
+        $no_vacantes = \DB::table('vacantes')->where('is_covered', 0 )->count();
 
+        return view('vacantesparati', compact('empresas','municipios','vacantes','requisitos','info','fechas','recientes', 'no_vacantes'));
+    }
+    
     // Mi cuenta 
     public function micuenta()
     {
@@ -307,18 +331,13 @@ class HomeController extends Controller
         $id   = auth()->id();
         $file = $req->file('photoUser');
 
-        if($file!="")
-        {
-            $ldate = date('Ymd_His_');
-            $img   = $file->getClientOriginalName();
-            $img2  = $ldate.$img;
-            \Storage::disk('local')->put($img2, \File::get($file));
+        if ($req->hasFile('foto_perfil')) {
+            $file = $req->file('foto_perfil');
+            $nombreImagen = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('archivo'), $nombreImagen);
+        } else {
+            $nombreImagen = "sinfoto.png"; 
         }
-        else
-        {
-            $img2 = "sinfoto.png";
-        }
-
         $datoc = new DatosCiudadano;
         $datoc -> nombre_completo   = $req -> userName;
         $datoc -> telefono          = $req -> phoneUser;
@@ -620,53 +639,52 @@ class HomeController extends Controller
         echo '<script language="javascript">alert("Curriculum actualizado correctamente");</script>';
         return redirect()->route('micuenta');
     }
-
     //Guarda los datos de empresa
+    
     public function guardardatosemp(Request $req)
     {
         $id   = auth()->id();
         $file = $req->file('photoCompany');
-
-        if($file!="")
-        {
+    
+        if ($file != "") {
             $ldate = date('Ymd_His_');
             $img   = $file->getClientOriginalName();
-            $img2  = $ldate.$img;
+            $img2  = $ldate . $img;
             \Storage::disk('local')->put($img2, \File::get($file));
-        }
-        else
-        {
+        } else {
             $img2 = "sinfoto.png";
         }
-
+    
         $emp = new DatosEmpresa;
-        $emp -> nombre_RS           = $req-> companyName;
-        $emp -> calle               = $req-> calleCompany;
-        $emp -> numero              = $req-> numeroCompany;
-        $emp -> colonia             = $req-> coloniaCompany;
-        $emp -> CP                  = $req-> cpCompany;
-        $emp -> municipio           = $req-> municipio;
-        $emp -> estado              = $req-> entfed;
-        $emp -> RFC                 = $req-> CompanyRFC;
-        $emp -> tel1                = $req-> phoneUser1;
-        $emp -> tel2                = $req-> phoneUser2;
-        $emp -> email               = $req-> emailCompany;
-        $emp -> pagina_electronica  = $req-> pagElectronica;
-        $emp -> actividad_economica = $req-> acteco;
-        $emp -> numero_empleados    = $req-> numemple;
-        $emp -> ComoSeEnt            = $req-> ComoSeEnt;
-        $emp -> foto_perfil         = $img2;
-        $emp -> id                  = $id;
-        $emp -> save();
+        $emp->nombre_RS           = $req->companyName;
+        $emp->calle               = $req->calleCompany;
+        $emp->numero              = $req->numeroCompany;
+        $emp->colonia             = $req->coloniaCompany;
+        $emp->CP                  = $req->cpCompany;
+        $emp->municipio           = $req->municipio;
+        $emp->estado              = $req->entfed;
+        $emp->RFC                 = $req->CompanyRFC;
+        $emp->tel1                = $req->phoneUser1;
+        $emp->tel2                = $req->phoneUser2;
+        $emp->email               = $req->emailCompany;
+        $emp->pagina_electronica  = $req->pagElectronica;
+        $emp->actividad_economica = $req->acteco;
+        $emp->numero_empleados    = $req->numemple;
+        $emp->ComoSeEnt           = $req->ComoSeEnt;
+        $emp->foto_perfil         = $img2;
+        $emp->id                  = $id;
+        $emp->save();
+    
+        
+    \DB::UPDATE("UPDATE users SET nombre='$emp->nombre_RS', telefono='$emp->tel1', email='$emp->email' WHERE id='$id'");
+    
+    $correoDestino = "empleo.lerma@gmail.com";
 
-        $nombre_RS = $req-> companyName;
-        $tel1      = $req-> phoneUser1;
-        $emailc    = $req-> emailCompany;
+    Notification::route('mail', $correoDestino)->notify(new NuevaNotificacion($emp, $correoDestino));
 
-        \DB::UPDATE("UPDATE users SET nombre='$nombre_RS', telefono='$tel1', email='$emailc' WHERE id='$id'");
-
-        return redirect()->route('micuenta');
+    return redirect()->route('micuenta');
     }
+    
 
     public function modificarestadoemp(Request $req){
         
@@ -689,60 +707,64 @@ class HomeController extends Controller
     }
 
     //Modifica los datos de empresa
+    
     public function modificardatosemp(Request $req)
     {
-        $id   = auth()->id();
-        $file = $req->file('photoCompany');
-
-        if($file!="")
-        {
+        $id = auth()->id();
+        if (!$id) {
+            return redirect()->route('micuenta')->with('error', 'Usuario no autenticado');
+        }
+    
+        $empresa = DatosEmpresa::where('id', $id)->first();
+        if (!$empresa) {
+            return redirect()->route('micuenta')->with('error', 'No se encontró la empresa');
+        }
+    
+        if ($req->hasFile('photoCompany')) {
             $ldate = date('Ymd_His_');
-            $img   = $file->getClientOriginalName();
-            $img2  = $ldate.$img;
-            \Storage::disk('local')->put($img2, \File::get($file));
+            $img   = $req->file('photoCompany')->getClientOriginalName();
+            $img2  = $ldate . $img;
+            \Storage::disk('local')->put($img2, \File::get($req->file('photoCompany')));
+            $empresa->foto_perfil = $img2;
         }
-        else
-        {
-            $img2 = $req->actual;
+    
+        $empresa->nombre_RS           = $req->companyName;
+        $empresa->calle               = $req->calleCompany;
+        $empresa->numero              = $req->numeroCompany;
+        $empresa->colonia             = $req->coloniaCompany;
+        $empresa->CP                  = $req->cpCompany;
+        $empresa->municipio           = $req->municipio;
+        $empresa->estado              = $req->entfed;
+        $empresa->RFC                 = $req->CompanyRFC;
+        $empresa->tel1                = $req->phoneUser1;
+        $empresa->tel2                = $req->phoneUser2;
+        $empresa->email               = $req->emailCompany;
+        $empresa->pagina_electronica  = $req->pagElectronica;
+        $empresa->actividad_economica = $req->acteco;
+        $empresa->numero_empleados    = $req->numemple;
+        $empresa->ComoSeEnt           = $req->ComoSeEnt;
+        $empresa->save();
+    
+        User::where('id', $id)->update([
+            'nombre'  => $req->companyName,
+            'telefono' => $req->phoneUser1,
+            'email'   => $req->emailCompany
+        ]);
+    
+        Notification::route('mail', 'yoseclzad18@gmail.com')->notify(new ActualizacionDatos($empresa, 'yoseclzad18@gmail.com'));
+    
+        return redirect()->route('micuenta')->with('success', 'Datos actualizados correctamente');
+    }
+
+    public function enviarNotificaciones()
+    {
+        $empresas = Empresa::all(); 
+
+        foreach ($empresas as $empresa) {
+            $empresa->notify(new ActiveAccount());
         }
 
-        $nombre_RS           = $req-> companyName;
-        $calle               = $req-> calleCompany;
-        $numero              = $req-> numeroCompany;
-        $colonia             = $req-> coloniaCompany;
-        $CP                  = $req-> cpCompany;
-        $municipio           = $req-> municipio;
-        $estado              = $req-> entfed;
-        $RFC                 = $req-> CompanyRFC;
-        $tel1                = $req-> phoneUser1;
-        $tel2                = $req-> phoneUser2;
-        $emailc              = $req-> emailCompany;
-        $pagina_electronica  = $req-> pagElectronica;
-        $actividad_economica = $req-> acteco;
-        $numero_empleados    = $req-> numemple;
-        $ComoSeEnt           = $req-> ComoSeEnt;
-
-        \DB::UPDATE("UPDATE datos_empresas SET
-                    nombre_RS='$nombre_RS',
-                    calle='$calle',
-                    numero='$numero',
-                    colonia='$colonia',
-                    CP='$CP',
-                    municipio='$municipio',
-                    estado='$estado',
-                    RFC='$RFC',
-                    tel1='$tel1',
-                    tel2='$tel2',
-                    email='$emailc',
-                    pagina_electronica='$pagina_electronica',
-                    actividad_economica='$actividad_economica',
-                    numero_empleados='$numero_empleados',
-                    ComoSeEnt='$ComoSeEnt',
-                    foto_perfil='$img2'
-                    WHERE id='$id'");
-
-        \DB::UPDATE("UPDATE users SET nombre='$nombre_RS', telefono='$tel1', email='$emailc' WHERE id='$id'");
-        return redirect()->route('micuenta');
+        return response()->json(['message' => 'Notificaciones enviadas correctamente.']);
     }
 
 }

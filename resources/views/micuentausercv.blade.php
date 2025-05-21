@@ -201,7 +201,7 @@
                             <a class="nav-link active" data-toggle="tab" href="#verc">Ver Datos</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#cv">Descargar/Subir CV</a>
+                            <a class="nav-link " data-toggle="tab" href="#cv">Descargar/Subir CV</a>
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#modificarc">Editar Datos</a>
